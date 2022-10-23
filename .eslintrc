@@ -1,0 +1,19 @@
+{
+    "extends": "@apify",
+    "root": true,
+    "rules": {
+      "padded-blocks": "off",
+      "indent": [
+        "warn",
+        2
+      ],
+      "eol-last": "off",
+      "max-classes-per-file": "off",
+      "radix": "off",
+      "no-undef": "off",
+      "import/extensions": "off",
+      "max-len": "off",
+      "no-trailing-spaces": "off",
+      "object-shorthand": "off"
+    }
+}

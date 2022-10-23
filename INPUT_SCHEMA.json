@@ -1,0 +1,14 @@
+{
+    "title": "CheerioCrawler Template",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "email": {
+          "title": "E-mail data",
+          "type": "array",
+          "description": "Set to, cc and bcc. You can set more objects with addresses, in this case more e-mails will be sent.",
+          "prefill": [{"to": "your@email.com"}],
+          "editor": "json"
+      }
+    }
+}
