@@ -3,9 +3,8 @@ import { Actor } from 'apify';
 export class Utils {
 
   static parseDate(input) {
-    const dateRegexp = /(\d{1,2}\. ?\d{1,2}\. ?\d{4})[^\d]*(\d{1,2}:\d{1,2})[^\d]*(\d{1,2}:\d{1,2})/;
-
-    const match = input.match(dateRegexp);
+   
+    const match = input.match(/(\d{1,2}\. ?\d{1,2}\. ?\d{4})[^\d]*(\d{1,2}:\d{1,2})[^\d]*(\d{1,2}:\d{1,2})/);
 
     if (match?.length === 4) {
       const date = match[1].split('.');
@@ -20,7 +19,23 @@ export class Utils {
       const to = match[3];
 
       return new Validity(parsedDate, from, to);
+    }
+   
+    const match2 = input.match(/(\d{1,2}\. ?\d{1,2})[^\d]*(\d{1,2})[^\d]*(\d{1,2})/);
 
+    if (match2?.length === 4) {
+      const date = match2[1].split('.');
+
+      const year = new Date().getFullYear();
+      const month = parseInt(date[1]);
+      const day = parseInt(date[0]);
+
+      const parsedDate = new Date(year, month - 1, day);
+
+      const from = match2[2];
+      const to = match2[3];
+
+      return new Validity(parsedDate, from, to);
     }
 
     return null;
