@@ -23,9 +23,6 @@ If you don't want to send any email, just leave INPUT.json empty.
 ## OUTPUT
 ```json
 {
-	"Date": "2022-10-12",
-	"From": "17:00",
-	"To": "20:00",
-	"Text": "Pokud si dneska 12. 10. 2022 od 17:00 do 20:00 hodin dobiješ alespoň 200 Kč, dáme ti dvojnásob  ;)"
-}
+  "Date": "2022-10-12",
+ }
 ```

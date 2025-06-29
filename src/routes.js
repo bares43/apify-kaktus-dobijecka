@@ -5,14 +5,19 @@ import { Utils } from './utils.js';
 export const router = createCheerioRouter();
 
 router.addDefaultHandler(async ({ $ }) => {
-  for (const h3 of $('h3')) {
+  for (const a of $('a')) {
 
-    const text = $(h3).text();
+    if (!$(a).attr('href')?.startsWith('https://www.mujkaktus.cz/api/download')
+      || !$(a).attr('href')?.endsWith('.pdf')) {
+      continue;
+    }
+
+    const text = $(a).attr('href');
 
     const validity = Utils.parseDate(text);
 
     if (validity) {
-      await Actor.pushData(Utils.getResult(validity, text));
+      await Actor.pushData(Utils.getResult(validity));
 
       if (Utils.isSameDay(validity.date, new Date())) {
 
@@ -20,7 +25,7 @@ router.addDefaultHandler(async ({ $ }) => {
 
         if (emailsData) {
           for (const emailData of emailsData) {
-            await Utils.sendEmail(emailData, validity, text);
+            await Utils.sendEmail(emailData, validity);
           }
         }
 

@@ -4,38 +4,17 @@ export class Utils {
 
   static parseDate(input) {
    
-    const match = input.match(/(\d{1,2}\. ?\d{1,2}\. ?\d{4})[^\d]*(\d{1,2}:\d{1,2})[^\d]*(\d{1,2}:\d{1,2})/);
+    // from this input https://www.mujkaktus.cz/api/download?docUrl=%2Fapi%2Fdocuments%2Ffile%2FOP-Odmena-za-dobiti-FB_23062025.pdf&filename=OP-Odmena-za-dobiti-FB_23062025.pdf parse date 23. 6. 2025
 
-    if (match?.length === 4) {
-      const date = match[1].split('.');
-
-      const year = parseInt(date[2]);
-      const month = parseInt(date[1]);
-      const day = parseInt(date[0]);
-
-      const parsedDate = new Date(year, month - 1, day);
-
-      const from = match[2];
-      const to = match[3];
-
-      return new Validity(parsedDate, from, to);
-    }
-   
-    const match2 = input.match(/(\d{1,2}\. ?\d{1,2})[^\d]*(\d{1,2})[^\d]*(\d{1,2})/);
-
-    if (match2?.length === 4) {
-      const date = match2[1].split('.');
-
-      const year = new Date().getFullYear();
-      const month = parseInt(date[1]);
-      const day = parseInt(date[0]);
+    // First try to match date in format DDMMYYYY from filename (e.g., 23062025)
+    const filenameMatch = input.match(/(\d{2})(\d{2})(\d{4})\.pdf/);
+    if (filenameMatch?.length === 4) {
+      const day = parseInt(filenameMatch[1]);
+      const month = parseInt(filenameMatch[2]);
+      const year = parseInt(filenameMatch[3]);
 
       const parsedDate = new Date(year, month - 1, day);
-
-      const from = match2[2];
-      const to = match2[3];
-
-      return new Validity(parsedDate, from, to);
+      return new Validity(parsedDate);
     }
 
     return null;
@@ -45,25 +24,22 @@ export class Utils {
     return a.getDate() === b.getDate() && a.getMonth() === b.getMonth() && a.getFullYear() === b.getFullYear();
   }
 
-  static getResult(validity, text) {
+  static getResult(validity) {
     const { date } = validity;
 
     return {
       Date: `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`,
-      From: validity.from,
-      To: validity.to,
-      Text: text,
     };
   }
 
-  static async sendEmail(emailData, validity, text) {
+  static async sendEmail(emailData) {
 
     await Actor.call('apify/send-mail', {
       to: emailData.to,
       cc: emailData.cc,
       bcc: emailData.bcc,
-      subject: `Kaktus dobíječka dnes od ${validity.from} do ${validity.to}`,
-      text: text,
+      subject: `Kaktus dobíječka dnes`,
+      text: '<a href="https://www.mujkaktus.cz/chces-pridat">Web</a>',
     });
 
   }
@@ -71,10 +47,8 @@ export class Utils {
 }
 
 export class Validity {
-  constructor(date, from, to) {
+  constructor(date) {
     this.date = date;
-    this.from = from;
-    this.to = to;
   }
 
 }
