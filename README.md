@@ -23,6 +23,10 @@ If you don't want to send any email, just leave INPUT.json empty.
 ## OUTPUT
 ```json
 {
-  "Date": "2022-10-12",
+  "Date": "2025-07-09",
+	"From": "16:00",
+	"To": "18:00"
  }
 ```
+
+The "From" and "To" properties may be empty, depending on how the event is promoted on the Kaktus website.

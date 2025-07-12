@@ -4,8 +4,6 @@ export class Utils {
 
   static parseDate(input) {
    
-    // from this input https://www.mujkaktus.cz/api/download?docUrl=%2Fapi%2Fdocuments%2Ffile%2FOP-Odmena-za-dobiti-FB_23062025.pdf&filename=OP-Odmena-za-dobiti-FB_23062025.pdf parse date 23. 6. 2025
-
     // First try to match date in format DDMMYYYY from filename (e.g., 23062025)
     const filenameMatch = input.match(/(\d{2})(\d{2})(\d{4})\.pdf/);
     if (filenameMatch?.length === 4) {
@@ -27,19 +25,73 @@ export class Utils {
   static getResult(validity) {
     const { date } = validity;
 
-    return {
+    var result = {
       Date: `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`,
+      From: validity.startTime,
+      To: validity.endTime,
     };
+
+    return result;
   }
 
-  static async sendEmail(emailData) {
+  static parseDateTimeFromText(text) {
+    // Parse date and time from HTML text like "9.7.2025 16:00 - 18:00"
+    
+    // Match pattern: DD.MM.YYYY HH:MM - HH:MM
+    const dateTimeMatch = text.match(/(\d{1,2})\.(\d{1,2})\.(\d{4})\s+(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/);
+    
+    if (dateTimeMatch?.length === 8) {
+      const day = parseInt(dateTimeMatch[1]);
+      const month = parseInt(dateTimeMatch[2]);
+      const year = parseInt(dateTimeMatch[3]);
+      const startHour = parseInt(dateTimeMatch[4]);
+      const startMinute = parseInt(dateTimeMatch[5]);
+      const endHour = parseInt(dateTimeMatch[6]);
+      const endMinute = parseInt(dateTimeMatch[7]);
+      
+      // Create start and end date objects
+      const startDate = new Date(year, month - 1, day, startHour, startMinute);
+      
+      return {
+        date: startDate, // For compatibility with existing code
+        startTime: `${startHour.toString().padStart(2, '0')}:${startMinute.toString().padStart(2, '0')}`,
+        endTime: `${endHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`
+      };
+    }
+    
+    return null;
+  }
+
+  static async handleResult(result) {
+    await Actor.pushData(Utils.getResult(result));
+
+    if (Utils.isSameDay(result.date, new Date())) {
+
+      const { email: emailsData } = await Actor.getInput();
+
+      if (emailsData) {
+        for (const emailData of emailsData) {
+          await Utils.sendEmail(emailData, result);
+        }
+      }
+
+    }
+  }
+
+  static async sendEmail(emailData, result) {
+
+    let subject = `Kaktus dobíječka dnes`;
+
+    if (result.startTime && result.endTime) {
+      subject = `${subject} ${result.startTime} - ${result.endTime}`;
+    }
 
     await Actor.call('apify/send-mail', {
       to: emailData.to,
       cc: emailData.cc,
       bcc: emailData.bcc,
-      subject: `Kaktus dobíječka dnes`,
-      text: '<a href="https://www.mujkaktus.cz/chces-pridat">Web</a>',
+      subject: subject,
+      html: 'Podívat se na <a href="https://www.mujkaktus.cz/chces-pridat">web</a>',
     });
 
   }
