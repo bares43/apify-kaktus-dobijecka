@@ -27,9 +27,15 @@ export class Utils {
 
     var result = {
       Date: `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`,
-      From: validity.startTime,
-      To: validity.endTime,
     };
+
+    // Include time fields only when they are available
+    if (validity.startTime) {
+      result.From = validity.startTime;
+    }
+    if (validity.endTime) {
+      result.To = validity.endTime;
+    }
 
     return result;
   }
