@@ -128,6 +128,19 @@ Implementation: `src/utils.js:71-103`
 
 ## Maintenance Guide
 
+### Key Maintenance Principles
+
+**Backward Compatibility First**
+
+When maintaining this actor, the golden rule is: **NEVER DELETE EXISTING PARSING LOGIC**. The Kaktus website may change formats unpredictably or even alternate between different date formats for different promotional events. Always maintain backward compatibility by:
+
+1. Adding new parsing patterns alongside existing ones
+2. Testing all historical formats remain functional
+3. Trying newer formats first, then falling back to older ones
+4. Never replacing or removing working regex patterns
+
+This layered approach ensures the scraper continues to work regardless of which format the website uses.
+
 ### When to Update This Actor
 
 1. **Website Structure Changes**
@@ -138,6 +151,7 @@ Implementation: `src/utils.js:71-103`
 2. **Date Format Changes**
    - If the date/time format in promotional text changes
    - If PDF filename format changes
+   - **Important:** Always ADD new format support, never REPLACE existing formats
 
 3. **New Data Requirements**
    - If you need to extract additional information (e.g., bonus amount, conditions)
@@ -162,6 +176,16 @@ PDF filename parsing regex is in `src/utils.js:8`:
 ```javascript
 const filenameMatch = input.match(/(\d{2})(\d{2})(\d{4})\.pdf/);
 ```
+
+**IMPORTANT: When adding support for new date/time formats, ALWAYS keep the existing parsing logic intact.**
+
+The parsing functions should support multiple formats simultaneously. Never delete or replace previous regex patterns - instead, add new patterns as additional attempts. This ensures backward compatibility if the website alternates between different date formats or shows multiple promotional events.
+
+Example approach:
+- Try parsing with new format first
+- If that fails, try the existing format(s)
+- Return the first successful match
+- All historical formats should remain functional
 
 #### 3. Update Target URL
 
