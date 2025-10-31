@@ -41,11 +41,11 @@ export class Utils {
   }
 
   static parseDateTimeFromText(text) {
-    // Parse date and time from HTML text like "9.7.2025 16:00 - 18:00"
-    
-    // Match pattern: DD.MM.YYYY HH:MM - HH:MM
-    const dateTimeMatch = text.match(/(\d{1,2})\.(\d{1,2})\.(\d{4})\s+(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/);
-    
+    // Parse date and time from HTML text like "9.7.2025 16:00 - 18:00" or "31. 10. 2025 20:00 - 22:00"
+
+    // Match pattern: DD.MM.YYYY HH:MM - HH:MM or DD. MM. YYYY HH:MM - HH:MM (with optional spaces after dots)
+    const dateTimeMatch = text.match(/(\d{1,2})\.\s*(\d{1,2})\.\s*(\d{4})\s+(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/);
+
     if (dateTimeMatch?.length === 8) {
       const day = parseInt(dateTimeMatch[1]);
       const month = parseInt(dateTimeMatch[2]);
@@ -54,17 +54,17 @@ export class Utils {
       const startMinute = parseInt(dateTimeMatch[5]);
       const endHour = parseInt(dateTimeMatch[6]);
       const endMinute = parseInt(dateTimeMatch[7]);
-      
+
       // Create start and end date objects
       const startDate = new Date(year, month - 1, day, startHour, startMinute);
-      
+
       return {
         date: startDate, // For compatibility with existing code
         startTime: `${startHour.toString().padStart(2, '0')}:${startMinute.toString().padStart(2, '0')}`,
         endTime: `${endHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`
       };
     }
-    
+
     return null;
   }
 
