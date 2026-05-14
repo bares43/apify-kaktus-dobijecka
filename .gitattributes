@@ -1,0 +1,32 @@
+# Normalize all text files to LF in the repository.
+# With core.autocrlf=false, working copies receive exactly what is stored.
+* text=auto eol=lf
+
+# Windows scripts should keep CRLF.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.sln text eol=crlf
+
+# Binary files.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.eot binary
+*.dll binary
+*.exe binary
+*.pdb binary
+*.pdf binary
+*.zip binary
+*.gz binary
+*.tar binary
+*.mo binary
+*.docx binary
+*.xlsx binary
+*.sqlite binary
