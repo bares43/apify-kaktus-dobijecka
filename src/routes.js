@@ -4,10 +4,10 @@ import { Utils } from './utils.js';
 export const router = createCheerioRouter();
 
 router.addDefaultHandler(async ({ $ }) => {
-
   // let's try to parse date and time from text
-  const textResult = 
-  Utils.parseDateTimeFromText($('div.richTextStyles').text());
+  const textResult = Utils.parseDateTimeFromText(
+    $('div.richTextStyles').text(),
+  );
 
   if (textResult) {
     await Utils.handleResult(textResult);
@@ -16,9 +16,10 @@ router.addDefaultHandler(async ({ $ }) => {
 
   // if not, let's try to parse date from PDF terms filename
   for (const a of $('a')) {
-
-    if (!$(a).attr('href')?.startsWith('https://www.mujkaktus.cz/api/download')
-      || !$(a).attr('href')?.endsWith('.pdf')) {
+    if (
+      !$(a).attr('href')?.startsWith('https://www.mujkaktus.cz/api/download') ||
+      !$(a).attr('href')?.endsWith('.pdf')
+    ) {
       continue;
     }
 

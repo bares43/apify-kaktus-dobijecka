@@ -7,7 +7,7 @@ await Actor.init();
 const startUrls = ['https://www.mujkaktus.cz/chces-pridat'];
 
 const crawler = new CheerioCrawler({
-    requestHandler: router,
+  requestHandler: router,
 });
 
 await crawler.run(startUrls);

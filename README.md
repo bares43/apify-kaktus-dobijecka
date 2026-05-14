@@ -30,3 +30,11 @@ If you don't want to send any email, just leave INPUT.json empty.
 ```
 
 The "From" and "To" properties may be empty, depending on how the event is promoted on the Kaktus website.
+
+## DEVELOPMENT
+
+```bash
+npm run lint
+npm run lint:fix
+npm run format
+```
